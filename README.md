@@ -16,9 +16,13 @@ For this project, we use some movie-related data from:
 ## Insights
 
 Q1: Categorize the top popular/profitable movies based on their genres.
+
 Q2: Find the film-crew for the top profitable movies.
+
 Q3: Categorize the top popular/profitable genres based on their investment budget.
+
 Q4: Categorize the top popular/profitable genres based on their film crew.
+
 Q5: With the available budget for our movie investment, what genre and what crew would be the best choice.
 
 
