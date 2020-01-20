@@ -1,116 +1,110 @@
+# Module 1 Final Project Specifications
 
-# In this notebook I plan on loading in my data, structuring it and getting it ready for EDA, there will be no EDA in this notebook
+In this project, we will do some data analysis and presentation to explore what type of movies are currently doing the best at the box office and translate those findings into actionable insights that our client can use when deciding what type of movies they should produce.
 
 
+## Dataset
+
+For this project, we use some movie-related data from:
+
+*Box Office Mojo
+*IMDB
+*Rotten Tomatoes
+*TheMovieDB.org
+
+
+## Insights
+
+Q1: Categorize the top popular/profitable movies based on their genres.
+Q2: Find the film-crew for the top profitable movies.
+Q3: Categorize the top popular/profitable genres based on their investment budget.
+Q4: Categorize the top popular/profitable genres based on their film crew.
+Q5: With the available budget for our movie investment, what genre and what crew would be the best choice.
+
+
+## Technical Aspect
+
+To get to the question 5 which is the most practical result of our data analysis for our client, we need to answer all other questions by exploring our data sets, joining different tables and creating graphs.
+
+1. In this project, Pandas DataFrame and matplotlib are **mainly** used for exploring and visualizing data.
+
+2. We start with importing our available data:
+
+#### Use glob to import all the csv files
 ```python
-import os # in case I need to do anything with path/dir
-
-import numpy as np
-import pandas as pd
-
-from glob import glob
+csv_files = glob("zippedData\\*.csv.gz")
 ```
 
-### Load in the data using glob
+3. Exploring data:
 
-
-```python
-# use glob to get all of the csv files
-csv_files = glob("zippedData/*.csv")
-csv_files
-```
-
-
-
-
-    ['zippedData/tmdb.movies.csv',
-     'zippedData/imdb.title.crew.csv',
-     'zippedData/tn.movie_budgets.csv',
-     'zippedData/imdb.title.ratings.csv',
-     'zippedData/imdb.name.basics.csv',
-     'zippedData/imdb.title.principals.csv',
-     'zippedData/imdb.title.akas.csv',
-     'zippedData/bom.movie_gross.csv',
-     'zippedData/imdb.title.basics.csv']
-
-
-
+...Creating dataframe from each file.
 
 ```python
-# create a dictionary with 
-# keys as csv filenames (cleaned)
-# values as their respective dataframes
-csv_files_dict = {}
-for filename in csv_files:
-    filename_cleaned = os.path.basename(filename).replace(".csv", "").replace(".", "_")
-    filename_df = pd.read_csv(filename, index_col=0)
-    csv_files_dict[filename_cleaned] = filename_df
+df(i) = pd.read_csv(csv_files[i])
 ```
+...Getting basic information about each data frame.
 
-### Load files into sqlite database
-
-
+#### Number of columns and rows,
 ```python
-import sqlite3
+print(df(i).shape(), "\n\n")
 ```
 
-
+#### Name of the columns,
 ```python
-# this will create a sqlite file in your directory
-conn = sqlite3.connect("movies_db.sqlite")
+print(df(i).columns, "\n")
 ```
 
-
+#### Values of the specific column:
 ```python
-# this converts a dataframe to a sqlite table, with the ame 'tmdb_movies'
-# just let sql create the schema itself
-
-df_tmdb_movies.to_sql("tmdb_movies", conn)
+print(df(i)["specific column"].unique())
 ```
 
-
+#### Total number of missing datas,type of objects and more information for each column:
 ```python
-# Write a function that converts the dataframe to a sqlite table
-def create_sql_table_from_df(df, name, conn):
-    # Use try except
-    # it will try to make a table
-    # if a table exists the function will execute whatever you put in the except part
-    try:
-        df.to_sql(name, conn)
-        print(f"Created table {name}")
-    
-    # if the table exists t will tell you, and won't cause an error
-    except Exception as e:
-        print(f"could not make table {name}")
-        print(e)
+print(df(i).isna().sum(), "\n")
+print(df(i).info, "\n")
+print(df(i).describe(), "\n" )
 ```
 
+4. We can employ different data manipulation methods to clean our dataframes/tables,
 
+#### Drop columns:
 ```python
-# Looping through the dictionary from earlier, that contains the keys and dataframes of all the files
-# We can create the tables programmatically
-for name, table in csv_files_dict.items():
-    create_sql_table_from_df(table, name, conn)
+df(i)_clean = df(i).drop(["col1","col2","coli"],axis=1, inplace=False)
 ```
 
-
+#### Drop rows:
 ```python
-# Now create a .gitignore file that will ignore the files that you unzipped and the sqlite file
-# look at mine for a reference
-# you cannot push files bigger than 100 MB to github from your computer
-
-# you can create your file here in jupyter and open it from jupyter
-with open("./.gitignore", "w+") as f:
-    f.write("*.sqlite") # put files you want to ignore here
-    f.write("\n") # insert a new line after each file
-    f.write("zippedData/")
-    f.write("\n")
-    f.write("zippedData/*.csv")
-    f.write("\n")
-    f.write("zippedData/*.gz")
+df(i)_clean = df(i).dropna(subset=["col1","col2"], how="any")
 ```
 
-
+#### For sanity check, we measure how much data are missing for each column/row being dropped
 ```python
-
+df(i).shape()
+df(i)_clean.shape()
 ```
+
+#### To replace or change the type of data:
+```python
+df(i)_replaced = df(i).col(i).str.replace("str1", "str2").astype(objecttype)
+```
+
+5. We create/join different dataframes to combine multiple data sets.
+
+#### To create dataframe from pandas series:
+```python
+frame={"col1":series1 ,"col2":series2, "coli":seriesi}
+df=pd.DataFrame(frame)
+```
+#### To merge different dataframes on matching values of specific column:
+```python
+df_merge = pd.merge(df1, df2, how='inner', on="col")
+```
+
+6. We finally create graphs to display the analysis outcomes,
+
+![alt text](http://localhost:8888/view/Flatiron/finalprep/dsc-mod-1-project-v2-1-online-ds-ft-120919/graphs/image.png "scatter graph")
+
+
+According to this plot, for low budget movies(up to $ 40000000) **drama** is the recommended choice of genre, while for the higher budget movies **action** is the best choice.
+
