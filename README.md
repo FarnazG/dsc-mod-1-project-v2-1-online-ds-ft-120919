@@ -107,7 +107,7 @@ df_merge = pd.merge(df1, df2, how='inner', on="col")
 
 6. We finally create graphs to display the analysis outcomes,
 
-![alt text](http://localhost:8888/view/Flatiron/finalprep/dsc-mod-1-project-v2-1-online-ds-ft-120919/graphs/image.png "scatter graph")
+![alt text](https://github.com/FarnazG/dsc-mod-1-project-v2-1-online-ds-ft-120919/blob/master/graphs/image.png "scatter graph")
 
 
 According to this plot, for low budget movies(up to $ 40000000) **drama** is the recommended choice of genre, while for the higher budget movies **action** is the best choice.
